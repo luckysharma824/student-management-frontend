@@ -191,11 +191,14 @@ export const gradeService = {
 
 export interface TeacherDTO {
   id?: number
-  name: string
+  code: string
+  firstName: string
+  lastName: string
   email: string
   phone: string
   department: string
-  qualifications?: string
+  qualification?: string
+  specialization?: string
   isActive?: boolean
 }
 

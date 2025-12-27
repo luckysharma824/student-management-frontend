@@ -37,10 +37,15 @@ const TeacherList: React.FC = () => {
   const [openDialog, setOpenDialog] = useState(false)
   const [editingId, setEditingId] = useState<number | null>(null)
   const [formData, setFormData] = useState<TeacherDTO>({
-    name: '',
+    code: '',
+    firstName: '',
+    lastName: '',
     email: '',
     phone: '',
     department: '',
+    qualification: '',
+    specialization: '',
+    isActive: false,
   })
 
   // Validation errors
@@ -65,7 +70,9 @@ const TeacherList: React.FC = () => {
       const term = searchTerm.toLowerCase()
       filtered = filtered.filter(
         (t) =>
-          t.name?.toLowerCase().includes(term) ||
+          t.code?.toLowerCase().includes(term) ||
+          t.firstName?.toLowerCase().includes(term) ||
+          t.lastName?.toLowerCase().includes(term) ||
           t.email?.toLowerCase().includes(term) ||
           t.phone?.includes(searchTerm)
       )
@@ -113,8 +120,16 @@ const TeacherList: React.FC = () => {
   const validateForm = (): boolean => {
     const errors: Record<string, string> = {}
 
-    if (!formData.name?.trim()) {
-      errors.name = 'Name is required'
+    if (!formData.code?.trim()) {
+      errors.code = 'Code is required'
+    }
+
+    if (!formData.firstName?.trim()) {
+      errors.firstName = 'First Name is required'
+    }
+
+    if (!formData.lastName?.trim()) {
+      errors.lastName = 'Last Name is required'
     }
 
     if (!formData.email?.trim()) {
@@ -141,11 +156,15 @@ const TeacherList: React.FC = () => {
       setEditingId(teacher.id || null)
     } else {
       setFormData({
-        name: '',
+        code: '',
+        firstName: '',
+        lastName: '',
         email: '',
         phone: '',
         department: '',
-        qualifications: '',
+        qualification: '',
+        specialization: '',
+        isActive: false,
       })
       setEditingId(null)
     }
@@ -304,7 +323,13 @@ const TeacherList: React.FC = () => {
           <TableHead sx={{ bgcolor: 'primary.main' }}>
             <TableRow>
               <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>
-                Name
+                Code
+              </TableCell>
+              <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>
+                First Name
+              </TableCell>
+              <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>
+                Last Name
               </TableCell>
               <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>
                 Email
@@ -327,7 +352,9 @@ const TeacherList: React.FC = () => {
             {filteredTeachers.length > 0 ? (
               filteredTeachers.map((teacher) => (
                 <TableRow key={teacher.id}>
-                  <TableCell>{teacher.name}</TableCell>
+                  <TableCell>{teacher.code}</TableCell>
+                  <TableCell>{teacher.firstName}</TableCell>
+                  <TableCell>{teacher.lastName}</TableCell>
                   <TableCell>{teacher.email}</TableCell>
                   <TableCell>{teacher.phone}</TableCell>
                   <TableCell>{teacher.department}</TableCell>
@@ -396,14 +423,42 @@ const TeacherList: React.FC = () => {
             <Grid item xs={12}>
               <TextField
                 fullWidth
-                label="Name"
-                value={formData.name}
+                label="Code"
+                value={formData.code}
                 onChange={(e) =>
-                  setFormData({ ...formData, name: e.target.value })
+                  setFormData({ ...formData, code: e.target.value })
                 }
                 margin="normal"
-                error={!!validationErrors.name}
-                helperText={validationErrors.name}
+                error={!!validationErrors.code}
+                helperText={validationErrors.code}
+                required
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="First Name"
+                value={formData.firstName}
+                onChange={(e) =>
+                  setFormData({ ...formData, firstName: e.target.value })
+                }
+                margin="normal"
+                error={!!validationErrors.firstName}
+                helperText={validationErrors.firstName}
+                required
+              />
+            </Grid>
+             <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Last Name"
+                value={formData.lastName}
+                onChange={(e) =>
+                  setFormData({ ...formData, lastName: e.target.value })
+                }
+                margin="normal"
+                error={!!validationErrors.lastName}
+                helperText={validationErrors.lastName}
                 required
               />
             </Grid>
@@ -456,12 +511,28 @@ const TeacherList: React.FC = () => {
             <Grid item xs={12}>
               <TextField
                 fullWidth
-                label="Qualifications"
-                value={formData.qualifications || ''}
+                label="Qualification"
+                value={formData.qualification || ''}
                 onChange={(e) =>
                   setFormData({
                     ...formData,
-                    qualifications: e.target.value,
+                    qualification: e.target.value,
+                  })
+                }
+                margin="normal"
+                multiline
+                rows={2}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Specialization"
+                value={formData.specialization || ''}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    specialization: e.target.value,
                   })
                 }
                 margin="normal"
