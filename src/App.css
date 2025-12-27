@@ -1,0 +1,56 @@
+.app-container {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+}
+
+.page-title {
+  margin-bottom: 2rem;
+  font-size: 2rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+}
+
+.button-group {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-container {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+}
+
+.error-message {
+  background-color: #ffebee;
+  color: #c62828;
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+.success-message {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
