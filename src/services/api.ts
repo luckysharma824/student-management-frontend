@@ -70,49 +70,78 @@ export const studentService = {
 export interface AttendanceDTO {
   id?: number
   studentId: number
+  studentCode?: string
+  studentName?: string
   courseId: number
-  date: string
+  courseCode?: string
+  courseName?: string
+  attendanceDate: string
   status: string
+  remarks?: string
+  semester: number
+}
+
+export interface AttendanceResponse {
+  message?: string
+  data?: AttendanceDTO | AttendanceDTO[]
+  total?: number
+  studentCode?: string
+  courseCode?: string
   semester?: number
+  attendancePercentage?: string
+  startDate?: string
+  endDate?: string
 }
 
 export const attendanceService = {
+  // CRUD Operations
   recordAttendance: (data: AttendanceDTO) =>
-    apiClient.post('/attendance', data),
+    apiClient.post<AttendanceResponse>('/attendance', data),
+  
   updateAttendance: (id: number, data: AttendanceDTO) =>
-    apiClient.put(`/attendance/${id}`, data),
+    apiClient.put<AttendanceResponse>(`/attendance/${id}`, data),
+  
+  deleteAttendance: (id: number) =>
+    apiClient.delete<{ message: string }>(`/attendance/${id}`),
+  
+  // Retrieve Operations
   getAttendanceById: (id: number) =>
-    apiClient.get(`/attendance/${id}`),
-  getAttendanceByStudent: (studentId: number) =>
-    apiClient.get(`/attendance/student/${studentId}`),
+    apiClient.get<AttendanceDTO>(`/attendance/${id}`),
+  
+  getAttendanceByStudent: (studentCode: string) =>
+    apiClient.get<AttendanceResponse>(`/attendance/student/${studentCode}`),
+  
   getAttendanceByStudentAndSemester: (
-    studentId: number,
+    studentCode: string,
     semester: number
   ) =>
-    apiClient.get(
-      `/attendance/student/${studentId}/semester/${semester}`
+    apiClient.get<AttendanceResponse>(
+      `/attendance/student/${studentCode}/semester/${semester}`
     ),
-  getAttendanceByCourse: (courseId: number) =>
-    apiClient.get(`/attendance/course/${courseId}`),
+  
+  getAttendanceByCourse: (courseCode: string) =>
+    apiClient.get<AttendanceResponse>(`/attendance/course/${courseCode}`),
+  
   getAttendanceBySemester: (semester: number) =>
-    apiClient.get(`/attendance/semester/${semester}`),
+    apiClient.get<AttendanceResponse>(`/attendance/semester/${semester}`),
+  
+  // Analytics
   getAttendancePercentage: (
-    studentId: number,
+    studentCode: string,
     semester: number
   ) =>
-    apiClient.get(`/attendance/student/${studentId}/percentage`, {
+    apiClient.get<AttendanceResponse>(`/attendance/student/${studentCode}/percentage`, {
       params: { semester },
     }),
+  
   getAttendanceByDateRange: (
     startDate: string,
     endDate: string,
     semester: number
   ) =>
-    apiClient.get('/attendance/date-range', {
+    apiClient.get<AttendanceResponse>('/attendance/date-range', {
       params: { startDate, endDate, semester },
     }),
-  deleteAttendance: (id: number) =>
-    apiClient.delete(`/attendance/${id}`),
 }
 
 export interface CourseDTO {
@@ -133,6 +162,8 @@ export const courseService = {
     apiClient.put(`/course/${id}`, data),
   getCourseById: (id: number) =>
     apiClient.get(`/course/${id}`),
+  getCourseByCode: (code: string) =>
+    apiClient.get(`/course/code/${code}`),
   getAllCourses: () =>
     apiClient.get('/course'),
   getActiveCourses: () =>
@@ -150,43 +181,95 @@ export const courseService = {
 export interface GradeDTO {
   id?: number
   studentId: number
+  studentCode?: string
+  studentName?: string
   courseId: number
-  marks: number
+  courseCode?: string
+  courseName?: string
+  teacherId?: number
+  teacherName?: string
+  semester: number
+  internalMarks: number
+  externalMarks: number
+  totalMarks?: number
+  gradePoint?: string
+  remarks?: string
+  createdAt?: string
+  updatedAt?: string
+}
+
+export interface GradeResponse {
+  message?: string
+  data?: GradeDTO | GradeDTO[]
+  total?: number
+  studentCode?: string
+  courseCode?: string
   semester?: number
-  gradePoint?: number
+  averageGrade?: number
+  semesterGPA?: string
+}
+
+export interface StudentAverageResponse {
+  studentCode: string
+  averageMarks: string
+}
+
+export interface StudentGPAResponse {
+  studentCode: string
+  semester: number
+  gpa: string
 }
 
 export const gradeService = {
+  // CRUD Operations
   createGrade: (data: GradeDTO) =>
-    apiClient.post('/grade', data),
+    apiClient.post<GradeResponse>('/grade', data),
+  
   updateGrade: (id: number, data: GradeDTO) =>
-    apiClient.put(`/grade/${id}`, data),
-  getGradeById: (id: number) =>
-    apiClient.get(`/grade/${id}`),
-  getGradesByStudent: (studentId: number) =>
-    apiClient.get(`/grade/student/${studentId}`),
-  getGradesByStudentAndSemester: (
-    studentId: number,
-    semester: number
-  ) =>
-    apiClient.get(`/grade/student/${studentId}/semester/${semester}`),
-  getGradesByCourse: (courseId: number) =>
-    apiClient.get(`/grade/course/${courseId}`),
-  getGradesByCourseAndSemester: (
-    courseId: number,
-    semester: number
-  ) =>
-    apiClient.get(
-      `/grade/course/${courseId}/semester/${semester}`
-    ),
-  getStudentAverageGrade: (studentId: number) =>
-    apiClient.get(`/grade/student/${studentId}/average`),
-  getStudentGPA: (studentId: number, semester: number) =>
-    apiClient.get(`/grade/student/${studentId}/gpa`, {
-      params: { semester },
-    }),
+    apiClient.put<GradeResponse>(`/grade/${id}`, data),
+  
   deleteGrade: (id: number) =>
-    apiClient.delete(`/grade/${id}`),
+    apiClient.delete<{ message: string }>(`/grade/${id}`),
+  
+  // Retrieve Single Grade
+  getGradeById: (id: number) =>
+    apiClient.get<GradeDTO>(`/grade/${id}`),
+  
+  // Get Grades by Student Code
+  getGradesByStudent: (studentCode: string) =>
+    apiClient.get<GradeResponse>(`/grade/student/${studentCode}`),
+  
+  getGradesByStudentAndSemester: (
+    studentCode: string,
+    semester: number
+  ) =>
+    apiClient.get<GradeResponse>(
+      `/grade/student/${studentCode}/semester/${semester}`
+    ),
+  
+  // Get Grades by Course Code
+  getGradesByCourse: (courseCode: string) =>
+    apiClient.get<GradeResponse>(`/grade/course/${courseCode}`),
+  
+  getGradesByCourseAndSemester: (
+    courseCode: string,
+    semester: number
+  ) =>
+    apiClient.get<GradeResponse>(
+      `/grade/course/${courseCode}/semester/${semester}`
+    ),
+  
+  // Analytics Operations
+  getStudentAverageGrade: (studentCode: string) =>
+    apiClient.get<StudentAverageResponse>(
+      `/grade/student/${studentCode}/average`
+    ),
+  
+  getStudentGPA: (studentCode: string, semester: number) =>
+    apiClient.get<StudentGPAResponse>(
+      `/grade/student/${studentCode}/gpa`,
+      { params: { semester } }
+    ),
 }
 
 export interface TeacherDTO {
